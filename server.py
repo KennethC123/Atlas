@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
-app = FastAPI(title="KK Control Panel")
+app = FastAPI(title="Atlas")
 
 WORKSPACE = Path.home() / ".openclaw" / "workspace"
 NOTES_PATH = WORKSPACE / "kk-control" / "notes.md"

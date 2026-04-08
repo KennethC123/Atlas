@@ -1,4 +1,4 @@
-/* KK Control Panel — app.js */
+/* Atlas — app.js */
 
 const TABS = [
   { id: 'overview',  label: 'Overview',  icon: '📊' },
@@ -117,8 +117,11 @@ async function switchTab(tabId) {
 }
 
 // ── API helper ───────────────────────────────────────
+// Resolve API paths relative to the page base (handles reverse proxy sub-paths)
+const BASE = window.location.pathname.replace(/\/$/, '');
 async function api(url, opts = {}) {
-  const res = await fetch(url, opts);
+  const resolvedUrl = url.startsWith('/api/') ? BASE + url : url;
+  const res = await fetch(resolvedUrl, opts);
   if (!res.ok) {
     const txt = await res.text();
     throw new Error(`${res.status}: ${txt.slice(0, 200)}`);
@@ -706,7 +709,7 @@ function renderNotes(data, title) {
 
 async function saveNotes(content, savedEl) {
   try {
-    await fetch('/api/notes', {
+    await fetch(BASE + '/api/notes', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: content,

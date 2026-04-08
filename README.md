@@ -1,4 +1,4 @@
-# KK Control Panel
+# Atlas
 
 Ken's personal OpenClaw ops dashboard. Runs on port 3201 inside the VM, reverse-proxied by the OpenClaw gateway at `/webserver/3201/`.
 
