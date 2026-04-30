@@ -30,7 +30,7 @@
   }
   a { color: var(--accent); text-decoration: none; }
 
-  /* ── Header ── */
+  /* Header */
   .header {
     background: linear-gradient(135deg, #0d0d0f 0%, #141428 100%);
     border-bottom: 1px solid var(--border);
@@ -65,7 +65,7 @@
   .day-counter span { color: var(--accent); }
   .ends { font-size: 11px; color: var(--gray); }
 
-  /* ── Stats Bar ── */
+  /* Stats Bar */
   .stats-bar {
     background: var(--card);
     border-bottom: 1px solid var(--border);
@@ -111,7 +111,7 @@
   .macro-coin .macro-pct.red { color: var(--red); }
   .macro-coin .macro-pct.gray { color: var(--gray); }
 
-  /* ── Tabs ── */
+  /* Tabs */
   .tabs {
     display: flex;
     gap: 0;
@@ -138,22 +138,15 @@
   .tab-content { display: none; }
   .tab-content.active { display: block; }
 
-  /* ── Podium ── */
-  /* ── Overview two-column layout ── */
+  /* Overview/Highlights */
   .overview-top {
     display: flex;
     gap: 24px;
     align-items: flex-start;
     margin-bottom: 8px;
   }
-  .overview-podium {
-    flex: 1;
-    min-width: 0;
-  }
-  .overview-categories {
-    width: 380px;
-    flex-shrink: 0;
-  }
+  .overview-podium { flex: 1; min-width: 0; }
+  .overview-categories { width: 380px; flex-shrink: 0; }
   .category-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -184,7 +177,6 @@
     margin: 0 auto;
     position: relative;
   }
-  /* subtle gold base/platform line */
   .podium-wrapper::after {
     content: '';
     position: absolute;
@@ -195,53 +187,15 @@
     background: linear-gradient(90deg, transparent, rgba(245,158,11,0.2) 15%, rgba(245,158,11,0.5) 50%, rgba(245,158,11,0.2) 85%, transparent);
     pointer-events: none;
   }
-  .podium-slot {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 148px;
-  }
-  .podium-avatar-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 5px;
-    margin-bottom: 0;
-  }
-  .podium-avatar {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid var(--border);
-  }
-  .podium-avatar-initials {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    font-weight: 800;
-    border: 3px solid var(--border);
-  }
-  .podium-slot.rank-1 .podium-avatar,
-  .podium-slot.rank-1 .podium-avatar-initials {
-    width: 72px; height: 72px;
-    border-color: var(--gold);
-    box-shadow: 0 0 20px rgba(245,158,11,0.5);
-  }
-  .podium-slot.rank-2 .podium-avatar,
-  .podium-slot.rank-2 .podium-avatar-initials {
-    border-color: var(--silver);
-    box-shadow: 0 0 12px rgba(148,163,184,0.35);
-  }
-  .podium-slot.rank-3 .podium-avatar,
-  .podium-slot.rank-3 .podium-avatar-initials {
-    border-color: var(--bronze);
-    box-shadow: 0 0 12px rgba(205,124,47,0.35);
-  }
+  .podium-slot { display: flex; flex-direction: column; align-items: center; width: 148px; }
+  .podium-avatar-area { display: flex; flex-direction: column; align-items: center; gap: 5px; margin-bottom: 0; }
+  .podium-avatar { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border); }
+  .podium-avatar-initials { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; border: 3px solid var(--border); }
+  
+  .podium-slot.rank-1 .podium-avatar, .podium-slot.rank-1 .podium-avatar-initials { width: 72px; height: 72px; border-color: var(--gold); box-shadow: 0 0 20px rgba(245,158,11,0.5); }
+  .podium-slot.rank-2 .podium-avatar, .podium-slot.rank-2 .podium-avatar-initials { border-color: var(--silver); box-shadow: 0 0 12px rgba(148,163,184,0.35); }
+  .podium-slot.rank-3 .podium-avatar, .podium-slot.rank-3 .podium-avatar-initials { border-color: var(--bronze); box-shadow: 0 0 12px rgba(205,124,47,0.35); }
+  
   .podium-name { font-weight: 700; font-size: 13px; text-align: center; margin-top: 6px; }
   .podium-claw { font-size: 11px; color: var(--text-dim); text-align: center; }
   .podium-usd { font-size: 14px; font-weight: 700; text-align: center; margin-top: 2px; }
@@ -249,85 +203,23 @@
   .podium-pct.green { color: var(--green); }
   .podium-pct.red { color: var(--red); }
 
-  /* 3D block */
-  .podium-pedestal {
-    width: 148px;
-    border-radius: 3px 3px 0 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #1a1a1a;
-    margin-top: 10px;
-  }
-  .podium-slot.rank-1 .podium-pedestal {
-    height: 120px;
-    border-top: 4px solid var(--gold);
-    box-shadow:
-      0 -6px 28px rgba(245,158,11,0.3),
-      inset 0 1px 0 rgba(245,158,11,0.15),
-      5px 5px 0 rgba(0,0,0,0.5);
-  }
-  .podium-slot.rank-2 .podium-pedestal {
-    height: 85px;
-    border-top: 4px solid var(--silver);
-    box-shadow:
-      5px 5px 0 rgba(0,0,0,0.5),
-      inset 0 1px 0 rgba(148,163,184,0.1);
-  }
-  .podium-slot.rank-3 .podium-pedestal {
-    height: 65px;
-    border-top: 4px solid var(--bronze);
-    box-shadow:
-      5px 5px 0 rgba(0,0,0,0.5),
-      inset 0 1px 0 rgba(205,124,47,0.1);
-  }
-  .podium-rank-label {
-    font-size: 40px;
-    font-weight: 900;
-    line-height: 1;
-    letter-spacing: -1px;
-  }
+  .podium-pedestal { width: 148px; border-radius: 3px 3px 0 0; display: flex; align-items: center; justify-content: center; background: #1a1a1a; margin-top: 10px; }
+  .podium-slot.rank-1 .podium-pedestal { height: 120px; border-top: 4px solid var(--gold); box-shadow: 0 -6px 28px rgba(245,158,11,0.3), inset 0 1px 0 rgba(245,158,11,0.15), 5px 5px 0 rgba(0,0,0,0.5); }
+  .podium-slot.rank-2 .podium-pedestal { height: 85px; border-top: 4px solid var(--silver); box-shadow: 5px 5px 0 rgba(0,0,0,0.5), inset 0 1px 0 rgba(148,163,184,0.1); }
+  .podium-slot.rank-3 .podium-pedestal { height: 65px; border-top: 4px solid var(--bronze); box-shadow: 5px 5px 0 rgba(0,0,0,0.5), inset 0 1px 0 rgba(205,124,47,0.1); }
+  .podium-rank-label { font-size: 40px; font-weight: 900; line-height: 1; letter-spacing: -1px; }
   .rank-1 .podium-rank-label { color: var(--gold); opacity: 0.9; }
   .rank-2 .podium-rank-label { color: var(--silver); opacity: 0.8; }
   .rank-3 .podium-rank-label { color: var(--bronze); opacity: 0.8; }
 
-  /* ── Main content ── */
+  /* Table */
   .main { padding: 20px 24px; }
-
-  /* ── Section headers ── */
-  .section-header {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--gray);
-    font-weight: 700;
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* ── Table ── */
+  .section-header { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); font-weight: 700; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
   .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); }
   table { width: 100%; border-collapse: collapse; }
-  thead { position: sticky; top: 0; z-index: 10; }
-  th {
-    background: #0f0f14;
-    color: var(--gray);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    font-weight: 700;
-    padding: 10px 14px;
-    text-align: left;
-    white-space: nowrap;
-    border-bottom: 1px solid var(--border);
-  }
+  th { background: #0f0f14; color: var(--gray); font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; font-weight: 700; padding: 10px 14px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
   th.right { text-align: right; }
-  td {
-    padding: 11px 14px;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-  }
+  td { padding: 11px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; }
   tr:last-child td { border-bottom: none; }
   tr:hover td { background: rgba(99, 102, 241, 0.04); }
 
@@ -342,246 +234,76 @@
   .pct.gray { color: var(--gray); }
   .usd { text-align: right; color: var(--text-dim); }
   .usd-main { text-align: right; font-weight: 600; }
-  .no-data { color: var(--gray); font-size: 12px; font-style: italic; }
 
-  /* ── Dense trades table ── */
+  /* Dense trades table */
   .trades-table td { padding: 7px 12px; font-size: 12px; }
   .trades-table th { padding: 8px 12px; }
-  .chain-tag {
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
+  .chain-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
   .chain-tag.base { background: #1d3a6e; color: #60a5fa; }
   .chain-tag.solana { background: #1d2e4a; color: #a78bfa; }
   .tx-link { font-family: monospace; font-size: 11px; }
 
-  /* ── Loading skeleton ── */
-  .skeleton {
-    background: linear-gradient(90deg, var(--card) 25%, #1a1a22 50%, var(--card) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    border-radius: 4px;
-    display: inline-block;
-  }
-  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-
-  /* ── Footer ── */
-  .footer {
-    text-align: center;
-    padding: 20px;
-    color: var(--gray);
-    font-size: 11px;
-    border-top: 1px solid var(--border);
-  }
-
-  /* ── Status dot ── */
-  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-  .dot.live { background: var(--green); animation: pulse 2s infinite; }
-  .dot.loading { background: var(--gold); }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-  /* ── Trade filters ── */
-  .trades-filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 12px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-  .filter-select {
-    background: var(--card);
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  .filter-select:focus { outline: 1px solid var(--accent); }
+  /* Trade filters */
+  .trades-filters { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+  .filter-select { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 5px 10px; border-radius: 6px; font-family: inherit; font-size: 12px; cursor: pointer; }
   .pnl-pos { color: var(--green); font-weight: 600; text-align: right; }
   .pnl-neg { color: var(--red); font-weight: 600; text-align: right; }
   .pnl-open { color: var(--text-dim); text-align: right; font-style: italic; font-size: 11px; }
-  .pnl-dash { color: var(--gray); text-align: right; }
 
-  /* ── Participant Drawer ── */
-  .drawer-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 999;
-    display: none;
-  }
+  /* Participant Drawer */
+  .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; display: none; }
   .drawer-overlay.open { display: block; }
-
-  .participant-drawer {
-    position: fixed;
-    right: 0;
-    top: 0;
-    height: 100vh;
-    width: 40%;
-    min-width: 320px;
-    background: var(--card);
-    border-left: 1px solid var(--border);
-    z-index: 1000;
-    transform: translateX(100%);
-    transition: transform 0.25s ease;
-    overflow-y: auto;
-    padding: 24px;
-  }
+  .participant-drawer { position: fixed; right: 0; top: 0; height: 100vh; width: 40%; min-width: 320px; background: var(--card); border-left: 1px solid var(--border); z-index: 1000; transform: translateX(100%); transition: transform 0.25s ease; overflow-y: auto; padding: 24px; }
   .participant-drawer.open { transform: translateX(0); }
-
-  .drawer-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-  .drawer-avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-    font-weight: 800;
-    flex-shrink: 0;
-    border: 2px solid var(--border);
-  }
+  .drawer-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+  .drawer-avatar { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; flex-shrink: 0; border: 2px solid var(--border); }
   .drawer-info { flex: 1; min-width: 0; }
   .drawer-name { font-size: 18px; font-weight: 700; }
   .drawer-claw { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
-  .drawer-badges { font-size: 16px; margin-top: 6px; letter-spacing: 2px; }
-  .drawer-close {
-    background: transparent;
-    border: 1px solid var(--border);
-    color: var(--text-dim);
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    font-family: inherit;
-    line-height: 1;
-  }
-  .drawer-close:hover { border-color: var(--accent); color: var(--text); }
-
-  .drawer-stats-strip {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-  .drawer-stat-card {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px;
-  }
+  .drawer-close { background: transparent; border: 1px solid var(--border); color: var(--text-dim); width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  
+  .drawer-stats-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .drawer-stat-card { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
   .drawer-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.8px; color: var(--gray); font-weight: 600; margin-bottom: 4px; }
   .drawer-stat-value { font-size: 15px; font-weight: 700; }
-  .drawer-stat-value.green { color: var(--green); }
-  .drawer-stat-value.red { color: var(--red); }
-
   .drawer-section { margin-bottom: 20px; }
-  .drawer-section-title {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--gray);
-    font-weight: 700;
-    margin-bottom: 10px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .name-btn {
-    background: none;
-    border: none;
-    color: var(--text);
-    font-family: inherit;
-    font-size: inherit;
-    font-weight: 600;
-    cursor: pointer;
-    padding: 0;
-    text-align: left;
-  }
+  .drawer-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--gray); font-weight: 700; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  
+  .name-btn { background: none; border: none; color: var(--text); font-family: inherit; font-size: inherit; font-weight: 600; cursor: pointer; padding: 0; text-align: left; }
   .name-btn:hover { color: var(--accent); text-decoration: underline; }
 
-  /* ── Mobile ── */
-  @media (max-width: 900px) {
-    .podium-slot { width: 110px; }
-    .podium-pedestal { width: 110px; }
-    .podium-rank-label { font-size: 32px; }
-    .header { flex-direction: column; align-items: flex-start; }
-    .overview-top { flex-direction: column; }
-    .overview-categories { width: 100%; }
-  }
-  @media (max-width: 600px) {
-    .main { padding: 12px; }
-    .stats-bar { gap: 16px; padding: 12px; }
-    .podium-section { padding: 20px 12px 8px; }
-    .tabs { padding: 0 12px; }
-  }
+  .footer { text-align: center; padding: 20px; color: var(--gray); font-size: 11px; border-top: 1px solid var(--border); }
+  .dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .dot.live { background: var(--green); }
+  .dot.loading { background: var(--gold); }
+
+  @media (max-width: 900px) { .podium-slot { width: 110px; } .podium-pedestal { width: 110px; } .podium-rank-label { font-size: 32px; } .header { flex-direction: column; align-items: flex-start; } .overview-top { flex-direction: column; } .overview-categories { width: 100%; } }
 </style>
 </head>
 <body>
 
-<!-- Header -->
 <div class="header">
   <div class="header-left">
     <div class="logo">LAT <span>S4</span> Leaderboard</div>
     <div class="badge">Live</div>
   </div>
   <div class="header-right">
-    <div>
-      <div class="day-counter">Day <span id="day-num">—</span> of <span id="total-days">73</span></div>
-      <div class="ends" id="countdown-timer">Ends 31 May 2026</div>
-    </div>
+    <div class="day-counter">Day <span id="day-num">—</span> of <span>73</span></div>
   </div>
 </div>
 
-<!-- Stats Bar -->
 <div class="stats-bar">
   <div class="stat">
     <div class="stat-label">Participants</div>
     <div class="stat-value" id="stat-participants">—</div>
   </div>
   <div class="stat-sep"></div>
-  <div class="stat">
-    <div class="stat-label">🟢 Green</div>
-    <div class="stat-value green" id="stat-green">—</div>
-  </div>
-  <div class="stat">
-    <div class="stat-label">🔴 Red</div>
-    <div class="stat-value red" id="stat-red">—</div>
-  </div>
+  <div class="stat"><div class="stat-label">🟢 Green</div><div class="stat-value green" id="stat-green">—</div></div>
+  <div class="stat"><div class="stat-label">🔴 Red</div><div class="stat-value red" id="stat-red">—</div></div>
   <div class="stat-sep"></div>
   <div class="stat">
     <div class="stat-label">Collective PnL</div>
-    <div id="stat-collective-wrap">
-      <div class="collective-principal" id="stat-collective-principal">—</div>
-      <div class="collective-current" id="stat-collective">—</div>
-    </div>
-  </div>
-  <div class="stat-sep"></div>
-  <div class="stat" id="macro-prices" style="display:flex;flex-direction:column;gap:6px">
-    <div style="display:flex;flex-direction:row;gap:20px;align-items:flex-end">
-    <div class="macro-coin" id="macro-BTC"></div>
-    <div class="macro-coin" id="macro-ETH"></div>
-    <div class="macro-coin" id="macro-SOL"></div>
-    <div class="macro-coin" id="macro-HYPE"></div>
-    </div>
-    <div style="font-size:9px;color:var(--gray);letter-spacing:0.3px">via CoinGecko · updates every 5 min</div>
+    <div class="collective-current" id="stat-collective">—</div>
   </div>
   <div class="stat-sep"></div>
   <div class="stat">
@@ -591,45 +313,25 @@
   <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()">↻ Refresh</button>
 </div>
 
-<!-- Tabs -->
 <div class="tabs">
   <button class="tab active" id="tab-btn-leaderboard" onclick="showTab('leaderboard')">Overview</button>
   <button class="tab" id="tab-btn-trades" onclick="showTab('trades')">Trades</button>
 </div>
 
-<!-- Main Content -->
 <div class="main">
-
-  <!-- Tab: Leaderboard -->
   <div id="tab-leaderboard" class="tab-content active">
-
-    <!-- Top section: podium left + categories right -->
     <div class="overview-top">
       <div class="overview-podium">
         <div class="section-header">Top 3</div>
-        <div class="podium-section" style="padding:24px 0 0">
-          <div class="podium-wrapper" id="podium-container"></div>
-        </div>
+        <div class="podium-section" style="padding:24px 0 0"><div class="podium-wrapper" id="podium-container"></div></div>
       </div>
       <div class="overview-categories">
         <div class="section-header">Highlights</div>
         <div class="category-grid">
-          <div class="category-card">
-            <div class="category-label">🔥 Most Active (24h)</div>
-            <div class="category-value" id="stat-most-active">—</div>
-          </div>
-          <div class="category-card">
-            <div class="category-label">📈 Most Traded Token</div>
-            <div class="category-value" id="stat-top-token">—</div>
-          </div>
-          <div class="category-card">
-            <div class="category-label">🚀 Top Gainer 24h</div>
-            <div class="category-value" id="stat-top-gainer-24h">—</div>
-          </div>
-          <div class="category-card">
-            <div class="category-label">📉 Largest Loss 24h</div>
-            <div class="category-value" id="stat-largest-loss">—</div>
-          </div>
+          <div class="category-card"><div class="category-label">🔥 Most Active (24h)</div><div class="category-value" id="stat-most-active">—</div></div>
+          <div class="category-card"><div class="category-label">📈 Most Traded Token</div><div class="category-value" id="stat-top-token">—</div></div>
+          <div class="category-card"><div class="category-label">🚀 Top Gainer 24h</div><div class="category-value" id="stat-top-gainer-24h">—</div></div>
+          <div class="category-card"><div class="category-label">📉 Largest Loss 24h</div><div class="category-value" id="stat-largest-loss">—</div></div>
         </div>
       </div>
     </div>
@@ -649,589 +351,183 @@
             <th class="right">7 Day Trend</th>
             <th class="right">Base</th>
             <th class="right">Solana</th>
-            <th class="right">Trade Count</th>
-            <th class="right">Tickers Traded</th>
+            <th class="right">Trades</th>
           </tr>
         </thead>
-        <tbody id="leaderboard-body">
-          <tr><td colspan="12" style="text-align:center;padding:40px;color:var(--gray)">Loading leaderboard...</td></tr>
-        </tbody>
+        <tbody id="leaderboard-body"></tbody>
       </table>
     </div>
   </div>
 
-  <!-- Tab: Trades -->
   <div id="tab-trades" class="tab-content">
-    <div class="section-header">All Trades — Full Competition (Mar 20 – May 31)</div>
+    <div class="section-header">All Trades</div>
     <div class="trades-filters">
-      <select class="filter-select" id="filter-claw" onchange="applyTradeFilters()">
-        <option value="">All Claws</option>
-      </select>
-      <select class="filter-select" id="filter-chain" onchange="applyTradeFilters()">
-        <option value="">All Chains</option>
-        <option value="Base">Base</option>
-        <option value="Solana">Solana</option>
-      </select>
-      <select class="filter-select" id="filter-type" onchange="applyTradeFilters()">
-        <option value="">All Types</option>
-        <option value="buy">Buy</option>
-        <option value="sell">Sell</option>
-        <option value="swap">Swap</option>
-      </select>
-      <select class="filter-select" id="filter-outcome" onchange="applyTradeFilters()">
-        <option value="">All Outcomes</option>
-        <option value="win">Winning (>$0)</option>
-        <option value="loss">Losing (<$0)</option>
-      </select>
+      <select class="filter-select" id="filter-claw" onchange="applyTradeFilters()"><option value="">All Claws</option></select>
+      <select class="filter-select" id="filter-type" onchange="applyTradeFilters()"><option value="">All Types</option><option value="buy">Buy</option><option value="sell">Sell</option><option value="swap">Swap</option></select>
+      <select class="filter-select" id="filter-outcome" onchange="applyTradeFilters()"><option value="">All Outcomes</option><option value="win">Winning</option><option value="loss">Losing</option></select>
     </div>
     <div class="table-wrap">
       <table class="trades-table">
-        <thead>
-          <tr>
-            <th>Claw</th>
-            <th>Chain</th>
-            <th>Sold</th>
-            <th>Received</th>
-            <th class="right">Size (USD)</th>
-            <th>Timestamp</th>
-            <th>Tx Hash</th>
-            <th class="right">PnL</th>
-          </tr>
-        </thead>
-        <tbody id="trades-body">
-          <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray)">Loading trades...</td></tr>
-        </tbody>
+        <thead><tr><th>Claw</th><th>Chain</th><th>Sold</th><th>Received</th><th class="right">Size</th><th>Time</th><th>Tx</th><th class="right">PnL</th></tr></thead>
+        <tbody id="trades-body"></tbody>
       </table>
     </div>
   </div>
-
 </div>
 
-<!-- Participant Drawer Overlay -->
 <div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
-
-<!-- Participant Drawer -->
 <div class="participant-drawer" id="participant-drawer">
   <div class="drawer-header">
     <div class="drawer-avatar" id="drawer-avatar"></div>
-    <div class="drawer-info">
-      <div class="drawer-name" id="drawer-name"></div>
-      <div class="drawer-claw" id="drawer-claw"></div>
-      <div class="drawer-badges" id="drawer-badges"></div>
-    </div>
+    <div class="drawer-info"><div class="drawer-name" id="drawer-name"></div><div class="drawer-claw" id="drawer-claw"></div></div>
     <button class="drawer-close" onclick="closeDrawer()">✕</button>
   </div>
   <div class="drawer-stats-strip" id="drawer-stats-strip"></div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Portfolio Split</div>
-    <div id="drawer-comp-wrap" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Stats</div>
-    <div class="category-grid" id="drawer-stats-grid"></div>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Holdings</div>
-    <div id="drawer-holdings-wrap">
-      <div style="color:var(--gray);font-size:12px;padding:12px 0">Loading holdings...</div>
-    </div>
-  </div>
-  <div class="drawer-section">
-    <div class="drawer-section-title">Trade History</div>
-    <div class="table-wrap">
-      <table class="trades-table">
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Sold → Received</th>
-            <th class="right">Size ($)</th>
-            <th class="right">PnL</th>
-          </tr>
-        </thead>
-        <tbody id="drawer-trades-body"></tbody>
-      </table>
-    </div>
-  </div>
+  <div class="drawer-section"><div class="drawer-section-title">Portfolio Split</div><div id="drawer-comp-wrap" style="display:flex;gap:8px;flex-wrap:wrap"></div></div>
+  <div class="drawer-section"><div class="drawer-section-title">Stats</div><div class="category-grid" id="drawer-stats-grid"></div></div>
+  <div class="drawer-section"><div class="drawer-section-title">Holdings</div><div id="drawer-holdings-wrap"></div></div>
+  <div class="drawer-section"><div class="drawer-section-title">Trade History</div><div class="table-wrap"><table class="trades-table"><thead><tr><th>Date</th><th>Type</th><th>Trade</th><th class="right">Size</th><th class="right">PnL</th></tr></thead><tbody id="drawer-trades-body"></tbody></table></div></div>
 </div>
 
-<!-- Footer -->
-<div class="footer">
-  Data via Nansen CLI · Auto-refreshes every hour · <a id="json-api-link" href="#">JSON API</a>
-  <script>document.getElementById('json-api-link').href = (window.location.pathname.replace(/\/+$/, '')) + '/api/leaderboard';</script>
-</div>
+<div class="footer">Data via Nansen CLI · Auto-refreshes every hour</div>
 
 <script>
 const MEDALS = ['🥇', '🥈', '🥉'];
-
-function renderSparkline(values) {
-  if (!values || values.length < 2) {
-    return '<span style="color:var(--gray);font-size:11px">—</span>';
-  }
-  const W = 80, H = 24, PAD = 2;
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-  const range = max - min || 1;
-  const pts = values.map((v, i) => {
-    const x = (i / (values.length - 1)) * W;
-    const y = H - PAD - ((v - min) / range) * (H - PAD * 2);
-    return `${x.toFixed(1)},${y.toFixed(1)}`;
-  }).join(' ');
-  const first = values[0], last = values[values.length - 1];
-  const color = last >= first ? 'var(--green)' : 'var(--red)';
-  return `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
-}
-
-function fmtUsd(v) {
-  if (v === null || v === undefined) return '—';
-  return '$' + parseFloat(v).toFixed(2);
-}
-
-function fmtUsdCompact(v) {
-  if (v === null || v === undefined) return '—';
-  const n = parseFloat(v);
-  if (n >= 1000) return '$' + (n / 1000).toFixed(1) + 'k';
-  return '$' + n.toFixed(0);
-}
-
-function fmtPct(v) {
-  if (v === null || v === undefined) return null;
-  const s = parseFloat(v).toFixed(2);
-  return (v >= 0 ? '+' : '') + s + '%';
-}
-
-function timeAgo(isoStr) {
-  if (!isoStr) return 'never';
-  const d = new Date(isoStr);
-  const diffMs = Date.now() - d.getTime();
-  const mins = Math.floor(diffMs / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
-  const hrs = Math.floor(mins / 60);
-  if (hrs < 24) return `${hrs}h ago`;
-  return d.toLocaleDateString();
-}
-
-function fmtTime(isoStr) {
-  if (!isoStr) return '';
-  try {
-    const d = new Date(isoStr);
-    return d.toUTCString().slice(0, 22);
-  } catch { return isoStr.slice(0, 16); }
-}
-
 const BASE = window.location.pathname.replace(/\/+$/, '');
 
-async function apiFetch(path) {
-  return fetch(BASE + path);
-}
+function fmtUsd(v) { return v == null ? '—' : '$' + parseFloat(v).toFixed(2); }
+function fmtPct(v) { if (v == null) return null; return (v >= 0 ? '+' : '') + parseFloat(v).toFixed(2) + '%'; }
+function fmtTime(s) { if (!s) return ''; const d = new Date(s); return d.toUTCString().slice(5, 22); }
 
-function showTab(name) {
-  ['leaderboard', 'trades'].forEach(t => {
-    document.getElementById(`tab-${t}`).classList.toggle('active', t === name);
-    document.getElementById(`tab-btn-${t}`).classList.toggle('active', t === name);
-  });
+function renderSparkline(values) {
+  if (!values || values.length < 2) return '<span style="color:var(--gray);font-size:11px">—</span>';
+  const W=80, H=24, PAD=2;
+  const min=Math.min(...values), max=Math.max(...values), range=(max-min)||1;
+  const pts = values.map((v, i) => `${(i/(values.length-1)*W).toFixed(1)},${(H-PAD-((v-min)/range)*(H-PAD*2)).toFixed(1)}`).join(' ');
+  return `<svg width="${W}" height="${H}"><polyline points="${pts}" fill="none" stroke="${values[values.length-1]>=values[0]?'var(--green)':'var(--red)'}" stroke-width="1.5"/></svg>`;
 }
 
 async function loadStats() {
-  try {
-    const r = await apiFetch('/api/stats');
-    const d = await r.json();
-    document.getElementById('day-num').textContent = d.day || '—';
-    document.getElementById('total-days').textContent = d.total_days || '73';
-    document.getElementById('stat-participants').textContent = d.participant_count || '—';
-    document.getElementById('stat-green').textContent = d.green_count ?? '—';
-    document.getElementById('stat-red').textContent = d.red_count ?? '—';
-
-    // Collective PnL: initial principal → current (pct)
-    const initial = (d.participant_count || 0) * 100;
-    document.getElementById('stat-collective-principal').textContent =
-      `${fmtUsdCompact(initial)} initial`;
-    const collPct = fmtPct(d.collective_pct);
-    const collClass = (d.collective_pct || 0) >= 0 ? 'green' : 'red';
-    const el = document.getElementById('stat-collective');
-    el.className = `collective-current ${collClass}`;
-    el.textContent = collPct ? `${fmtUsd(d.collective_usd)} (${collPct})` : '—';
-
-    const dot = document.getElementById('status-dot');
-    const upd = document.getElementById('last-updated');
-    if (d.loading) {
-      dot.className = 'dot loading';
-      upd.textContent = 'Fetching data...';
-    } else {
-      dot.className = 'dot live';
-      upd.textContent = d.refreshed_at ? timeAgo(d.refreshed_at) : 'unknown';
-    }
-
-    // Most Active (24h)
-    const maEl = document.getElementById('stat-most-active');
-    if (maEl) {
-      if (d.most_active_claw && d.most_active_trades > 0) {
-        maEl.textContent = `${d.most_active_claw} 🔥 ${d.most_active_trades}`;
-      } else { maEl.textContent = '—'; }
-    }
-
-    // Most Traded token
-    const ttEl = document.getElementById('stat-top-token');
-    if (ttEl) {
-      ttEl.textContent = d.top_token ? `${d.top_token} (${d.top_token_count}x)` : '—';
-    }
-
-    // Top Gainer 24h
-    const tgEl = document.getElementById('stat-top-gainer-24h');
-    if (tgEl) {
-      if (d.top_gainer_claw && d.top_gainer_pct != null) {
-        const s = (d.top_gainer_pct >= 0 ? '+' : '') + parseFloat(d.top_gainer_pct).toFixed(2) + '%';
-        tgEl.textContent = `${d.top_gainer_claw} ${s}`;
-        tgEl.className = `stat-value ${d.top_gainer_pct >= 0 ? 'green' : 'red'}`;
-      } else {
-        tgEl.textContent = '—';
-        tgEl.className = 'stat-value';
-      }
-    }
-
-    // Largest Loss 24h
-    const mcEl = document.getElementById('stat-largest-loss');
-    if (mcEl) {
-      if (d.largest_loss_claw && d.largest_loss_pct != null) {
-        const pct = parseFloat(d.largest_loss_pct).toFixed(2);
-        mcEl.innerHTML = `${d.largest_loss_claw} <span style="color:var(--red)">${pct}%</span>`;
-      } else { mcEl.textContent = '—'; }
-    }
-    window._statsCache = d;
-  } catch (e) {
-    console.error('stats error', e);
-  }
+  const d = await (await fetch(BASE + '/api/stats')).json();
+  document.getElementById('day-num').textContent = d.day || '—';
+  document.getElementById('stat-participants').textContent = d.participant_count || '—';
+  document.getElementById('stat-green').textContent = d.green_count ?? '—';
+  document.getElementById('stat-red').textContent = d.red_count ?? '—';
+  document.getElementById('stat-collective').textContent = `${fmtUsd(d.collective_usd)} (${fmtPct(d.collective_pct)})`;
+  document.getElementById('status-dot').className = d.loading ? 'dot loading' : 'dot live';
+  document.getElementById('last-updated').textContent = d.refreshed_at ? new Date(d.refreshed_at).toLocaleTimeString() : 'unknown';
+  document.getElementById('stat-most-active').textContent = d.most_active_claw ? `${d.most_active_claw} (${d.most_active_trades})` : '—';
+  document.getElementById('stat-top-token').textContent = d.top_token ? `${d.top_token} (${d.top_token_count}x)` : '—';
+  document.getElementById('stat-top-gainer-24h').textContent = d.top_gainer_claw ? `${d.top_gainer_claw} ${fmtPct(d.top_gainer_pct)}` : '—';
+  document.getElementById('stat-largest-loss').textContent = d.largest_loss_claw ? `${d.largest_loss_claw} ${fmtPct(d.largest_loss_pct)}` : '—';
 }
 
 async function loadPodium() {
-  try {
-    const r = await apiFetch('/api/podium');
-    const d = await r.json();
-    const container = document.getElementById('podium-container');
-    if (!d.podium || d.podium.length === 0) {
-      container.innerHTML = '';
-      return;
-    }
-
-    // Classic podium order: 2nd left, 1st centre, 3rd right
-    const slots = [
-      d.podium.find(p => p.rank === 2),
-      d.podium.find(p => p.rank === 1),
-      d.podium.find(p => p.rank === 3),
-    ].filter(Boolean);
-
-    const avatarBg = { 1: '#2a2010', 2: '#1e2128', 3: '#211810' };
-
-    container.innerHTML = slots.map(p => {
-      const pct = fmtPct(p.pct_change);
-      const pctClass = p.pct_change === null ? '' : p.pct_change >= 0 ? 'green' : 'red';
-      const initial = (p.name || '?')[0].toUpperCase();
-      const bg = avatarBg[p.rank] || '#1a1a22';
-      const avatarEl = p.avatar_url
-        ? `<img class="podium-avatar" src="${p.avatar_url}" alt="${p.name}"
-             onerror="this.outerHTML='<div class=&quot;podium-avatar-initials&quot; style=&quot;background:${bg}&quot;>${initial}</div>'">`
-        : `<div class="podium-avatar-initials" style="background:${bg}">${initial}</div>`;
-      const medals = { 1: '🥇', 2: '🥈', 3: '🥉' };
-      return `<div class="podium-slot rank-${p.rank}">
-        <div class="podium-avatar-area">
-          ${avatarEl}
-          <div class="podium-name">${medals[p.rank]} ${p.name}</div>
-          <div class="podium-claw">${p.claw}</div>
-          <div class="podium-usd">${fmtUsd(p.total_usd)}</div>
-          <div class="podium-pct ${pctClass}">${pct || '—'}</div>
-        </div>
-        <div class="podium-pedestal">
-          <span class="podium-rank-label">${p.rank}</span>
-        </div>
-      </div>`;
-    }).join('');
-  } catch (e) {
-    console.error('podium error', e);
-  }
+  const d = await (await fetch(BASE + '/api/podium')).json();
+  const slots = [d.podium.find(p=>p.rank===2), d.podium.find(p=>p.rank===1), d.podium.find(p=>p.rank===3)].filter(Boolean);
+  document.getElementById('podium-container').innerHTML = slots.map(p => `
+    <div class="podium-slot rank-${p.rank}">
+      <div class="podium-avatar-area">
+        ${p.avatar_url ? `<img class="podium-avatar" src="${p.avatar_url}">` : `<div class="podium-avatar-initials">${p.name[0]}</div>`}
+        <div class="podium-name">${MEDALS[p.rank-1]} ${p.name}</div>
+        <div class="podium-claw">${p.claw}</div>
+        <div class="podium-usd">${fmtUsd(p.total_usd)}</div>
+        <div class="podium-pct ${p.pct_change>=0?'green':'red'}">${fmtPct(p.pct_change)}</div>
+      </div>
+      <div class="podium-pedestal"><span class="podium-rank-label">${p.rank}</span></div>
+    </div>`).join('');
 }
 
 async function loadLeaderboard() {
-  try {
-    const r = await apiFetch('/api/leaderboard');
-    const d = await r.json();
-    const tbody = document.getElementById('leaderboard-body');
-
-    if (d.loading || !d.leaderboard || d.leaderboard.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="12" style="text-align:center;padding:40px;color:var(--gray)">
-        ${d.loading ? 'Fetching data from Nansen... (this takes ~2 min on first load)' : 'No data yet'}
-      </td></tr>`;
-      return;
-    }
-
-    const max24h = Math.max(...d.leaderboard.map(e => e.trades_24h || 0));
-    // Fetch stats to get highlight claw handles for badges
-    let topGainerClaw = null, largestLossClaw = null;
-    try {
-      const sr = await apiFetch('/api/stats');
-      const sd = await sr.json();
-      topGainerClaw = sd.top_gainer_claw || null;
-      largestLossClaw = sd.largest_loss_claw || null;
-    } catch(_) {}
-
-    window._leaderboardCache = d.leaderboard;
-    tbody.innerHTML = d.leaderboard.map((e, i) => {
-      const medal = i < 3 ? `<span class="medal">${MEDALS[i]}</span>` : `<span class="rank">${e.rank}</span>`;
-      const pct = fmtPct(e.pct_change);
-      const pctClass = e.pct_change === null ? 'gray' : e.pct_change >= 0 ? 'green' : 'red';
-      const totalStr = e.has_data ? fmtUsd(e.total_usd) : '<span class="no-data">—</span>';
-      const baseStr = e.base_usd > 0 ? fmtUsd(e.base_usd) : '<span class="no-data">—</span>';
-      const solStr = e.sol_usd > 0 ? fmtUsd(e.sol_usd) : '<span class="no-data">—</span>';
-
-      const tradeCount = e.trade_count ?? '—';
-      const uniqueTickers = e.unique_tickers ?? '—';
-
-      const fireBadge = (max24h > 0 && (e.trades_24h || 0) === max24h) ? ' 🔥' : '';
-      const gainerBadge = (topGainerClaw && e.claw === topGainerClaw) ? ' 🚀' : '';
-      const lossBadge = (largestLossClaw && e.claw === largestLossClaw) ? ' 📉' : '';
-      const sleepBadge = (e.trade_count === 0 || e.trade_count == null) ? ' 😴' : '';
-      
-      const pct24h = e.pct_change_24h;
-      const pct24hStr = pct24h != null ? fmtPct(pct24h) : null;
-      const pct24hClass = pct24h == null ? 'gray' : pct24h >= 0 ? 'green' : 'red';
-      const maxDD = e.max_drawdown != null ? e.max_drawdown.toFixed(1) + '%' : '—';
-      const vol = e.volatility != null ? e.volatility.toFixed(1) : '—';
-
-      return `<tr>
-        <td class="rank-cell">${medal}</td>
-        <td class="name-cell">
-          <button class="name-btn" data-participant="${e.name.replace(/"/g,'&quot;')}">${e.name}</button>${fireBadge}${gainerBadge}${lossBadge}${sleepBadge}<br>
-          <span class="claw-label">${e.claw}</span>
-        </td>
-        <td class="usd-main">${totalStr}</td>
-        <td class="pct ${pctClass}">${pct || '—'}</td>
-        <td class="pct ${pct24hClass}">${pct24hStr || '—'}</td>
-        <td class="usd" style="text-align:right">${maxDD}</td>
-        <td class="usd" style="text-align:right">${vol}</td>
-        <td style="text-align:right;vertical-align:middle;padding:6px 14px">${renderSparkline(e.history || [])}</td>
-        <td class="usd">${baseStr}</td>
-        <td class="usd">${solStr}</td>
-        <td class="usd" style="text-align:right">${tradeCount}</td>
-        <td class="usd" style="text-align:right">${uniqueTickers}</td>
-      </tr>`;
-    }).join('');
-  } catch (e) {
-    console.error('leaderboard error', e);
-  }
+  const d = await (await fetch(BASE + '/api/leaderboard')).json();
+  if (d.loading) { document.getElementById('leaderboard-body').innerHTML = '<tr><td colspan="11" style="text-align:center;padding:40px">Loading data...</td></tr>'; return; }
+  window._leaderboardCache = d.leaderboard;
+  document.getElementById('leaderboard-body').innerHTML = d.leaderboard.map((e, i) => `
+    <tr>
+      <td class="rank-cell">${i<3?MEDALS[i]:e.rank}</td>
+      <td class="name-cell"><button class="name-btn" data-participant="${e.name}">${e.name}</button><br><span class="claw-label">${e.claw}</span></td>
+      <td class="usd-main">${fmtUsd(e.total_usd)}</td>
+      <td class="pct ${e.pct_change>=0?'green':'red'}">${fmtPct(e.pct_change)}</td>
+      <td class="pct ${e.pct_change_24h>=0?'green':'red'}">${fmtPct(e.pct_change_24h)}</td>
+      <td class="usd">${e.max_drawdown?.toFixed(1)}%</td>
+      <td class="usd">${e.volatility?.toFixed(1)}</td>
+      <td class="right">${renderSparkline(e.history)}</td>
+      <td class="usd">${fmtUsd(e.base_usd)}</td>
+      <td class="usd">${fmtUsd(e.sol_usd)}</td>
+      <td class="usd">${e.trade_count}</td>
+    </tr>`).join('');
 }
 
-let _allTrades = [];
-
 async function loadTrades() {
-  try {
-    const r = await apiFetch('/api/trades');
-    const d = await r.json();
-    _allTrades = d.trades || [];
-    window._tradesCache = _allTrades;
-
-    const clawSelect = document.getElementById('filter-claw');
-    if (clawSelect) {
-      const existing = new Set([...clawSelect.options].slice(1).map(o => o.value));
-      const claws = [...new Set(_allTrades.map(t => t.claw || t.name))].sort();
-      claws.forEach(c => {
-        if (!existing.has(c)) {
-          const opt = document.createElement('option');
-          opt.value = c; opt.textContent = c;
-          clawSelect.appendChild(opt);
-        }
-      });
-    }
-
-    applyTradeFilters();
-  } catch (e) {
-    console.error('trades error', e);
-  }
+  const d = await (await fetch(BASE + '/api/trades')).json();
+  window._allTrades = d.trades || [];
+  const clawSelect = document.getElementById('filter-claw');
+  [...new Set(window._allTrades.map(t=>t.claw))].sort().forEach(c => {
+    const opt = document.createElement('option'); opt.value = c; opt.textContent = c; clawSelect.appendChild(opt);
+  });
+  applyTradeFilters();
 }
 
 function applyTradeFilters() {
-  const tbody = document.getElementById('trades-body');
-  const clawFilter = (document.getElementById('filter-claw') || {}).value || '';
-  const chainFilter = (document.getElementById('filter-chain') || {}).value || '';
-  const typeFilter = (document.getElementById('filter-type') || {}).value || '';
-  const outcomeFilter = (document.getElementById('filter-outcome') || {}).value || '';
-
-  let trades = _allTrades;
-  if (clawFilter) trades = trades.filter(t => (t.claw || t.name) === clawFilter);
-  if (chainFilter) trades = trades.filter(t => t.chain === chainFilter);
-  if (typeFilter) trades = trades.filter(t => t.trade_type === typeFilter);
-  if (outcomeFilter) {
-    if (outcomeFilter === 'win') trades = trades.filter(t => t.realized_pnl > 0);
-    if (outcomeFilter === 'loss') trades = trades.filter(t => t.realized_pnl < 0);
-  }
-
-  if (!trades || trades.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray)">No trades found</td></tr>';
-    return;
-  }
-
-  tbody.innerHTML = trades.map(t => {
-    const chainClass = t.chain === 'Base' ? 'base' : 'solana';
-    const usdStr = t.usd_value > 0 ? `$${parseFloat(t.usd_value).toFixed(2)}` : '—';
-    const timeStr = t.timestamp ? fmtTime(t.timestamp) : '—';
-    let txEl = '—';
-    if (t.tx_hash) {
-      const explorer = t.chain === 'Base'
-        ? `https://basescan.org/tx/${t.tx_hash}`
-        : `https://solscan.io/tx/${t.tx_hash}`;
-      txEl = `<a class="tx-link" href="${explorer}" target="_blank" rel="noopener">${t.tx_hash.slice(0, 8)}…</a>`;
-    }
-    let pnlCell;
-    if (t.trade_type === 'buy') {
-      pnlCell = '<td class="pnl-open">Open</td>';
-    } else if (t.trade_type === 'sell' && t.realized_pnl != null) {
-      const cls = t.realized_pnl >= 0 ? 'pnl-pos' : 'pnl-neg';
-      const sign = t.realized_pnl >= 0 ? '+' : '';
-      pnlCell = `<td class="${cls}">${sign}$${Math.abs(t.realized_pnl).toFixed(2)}</td>`;
-    } else if (t.trade_type === 'sell') {
-      pnlCell = '<td class="pnl-open">—</td>';
-    } else {
-      pnlCell = '<td class="pnl-dash">—</td>';
-    }
-    return `<tr>
-      <td>${t.claw || t.name}</td>
-      <td><span class="chain-tag ${chainClass}">${t.chain}</span></td>
+  const claw = document.getElementById('filter-claw').value;
+  const type = document.getElementById('filter-type').value;
+  const outcome = document.getElementById('filter-outcome').value;
+  let trades = window._allTrades;
+  if (claw) trades = trades.filter(t => t.claw === claw);
+  if (type) trades = trades.filter(t => t.trade_type === type);
+  if (outcome) trades = trades.filter(t => outcome === 'win' ? t.realized_pnl > 0 : t.realized_pnl < 0);
+  
+  document.getElementById('trades-body').innerHTML = trades.map(t => `
+    <tr>
+      <td>${t.claw}</td>
+      <td><span class="chain-tag ${t.chain.toLowerCase()}">${t.chain}</span></td>
       <td>${t.sent}</td>
       <td>${t.received}</td>
-      <td class="usd-main">${usdStr}</td>
-      <td style="color:var(--text-dim)">${timeStr}</td>
-      <td>${txEl}</td>
-      ${pnlCell}
-    </tr>`;
-  }).join('');
+      <td class="usd-main">${fmtUsd(t.usd_value)}</td>
+      <td>${fmtTime(t.timestamp)}</td>
+      <td><a class="tx-link" href="${t.chain==='Base'?'https://basescan.org/tx/':'https://solscan.io/tx/'}${t.tx_hash}" target="_blank">tx</a></td>
+      <td class="right ${t.realized_pnl>=0?'pnl-pos':'pnl-neg'}">${t.realized_pnl?fmtUsd(t.realized_pnl):'—'}</td>
+    </tr>`).join('');
 }
-
-async function refreshAll() {
-  await Promise.all([loadStats(), loadLeaderboard(), loadTrades(), loadPodium()]);
-}
-
-async function manualRefresh() {
-  const btn = document.getElementById('refresh-btn');
-  btn.disabled = true;
-  btn.textContent = '↻ Refreshing...';
-  try {
-    const r = await apiFetch('/api/refresh');
-    const d = await r.json();
-    if (d.status === 'rate_limited') {
-      const mins = Math.ceil(d.retry_in_seconds / 60);
-      btn.textContent = `Wait ${mins}m`;
-      setTimeout(() => { btn.disabled = false; btn.textContent = '↻ Refresh'; }, d.retry_in_seconds * 1000);
-    } else {
-      btn.textContent = '↻ Triggered!';
-      setTimeout(refreshAll, 3000);
-      setTimeout(() => { btn.disabled = false; btn.textContent = '↻ Refresh'; }, 5000);
-    }
-  } catch (e) {
-    btn.disabled = false;
-    btn.textContent = '↻ Refresh';
-  }
-}
-
-async function loadMacroPrices() {
-  try {
-    const ids = ['bitcoin', 'ethereum', 'solana', 'hyperliquid'].join(',');
-    const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`;
-    const r = await fetch(url);
-    const d = await r.json();
-    const map = { bitcoin:'BTC', ethereum:'ETH', solana:'SOL', hyperliquid:'HYPE' };
-    for (const [id, sym] of Object.entries(map)) {
-      const el = document.getElementById(`macro-${sym}`);
-      if (!el) continue;
-      const coin = d[id];
-      if (!coin) continue;
-      const price = coin.usd;
-      const pct = coin.usd_24h_change;
-      const cls = pct == null ? 'gray' : pct >= 0 ? 'green' : 'red';
-      const priceStr = price >= 1000 ? '$' + price.toLocaleString(undefined, {maximumFractionDigits: 0}) : '$' + price.toFixed(2);
-      el.innerHTML = `<div class="macro-label">${sym}</div><div class="macro-price">${priceStr}</div><div class="macro-pct ${cls}">${(pct||0).toFixed(2)}%</div>`;
-    }
-  } catch (e) {}
-}
-loadMacroPrices();
-setInterval(loadMacroPrices, 300000);
 
 function openDrawer(name) {
-  const lb = window._leaderboardCache || [];
-  const entry = lb.find(e => e.name === name);
+  const entry = window._leaderboardCache.find(e => e.name === name);
   if (!entry) return;
-
-  const initial = (name || '?')[0].toUpperCase();
-  const av = document.getElementById('drawer-avatar');
-  av.style.background = '#1a1a22';
-  av.textContent = initial;
-
+  document.getElementById('drawer-avatar').textContent = name[0];
   document.getElementById('drawer-name').textContent = name;
-  document.getElementById('drawer-claw').textContent = entry.claw || '';
-
-  const pct = fmtPct(entry.pct_change);
-  const pctCls = entry.pct_change >= 0 ? 'green' : 'red';
+  document.getElementById('drawer-claw').textContent = entry.claw;
   document.getElementById('drawer-stats-strip').innerHTML = `
     <div class="drawer-stat-card"><div class="drawer-stat-label">Balance</div><div class="drawer-stat-value">${fmtUsd(entry.total_usd)}</div></div>
-    <div class="drawer-stat-card"><div class="drawer-stat-label">PnL</div><div class="drawer-stat-value ${pctCls}">${pct||'—'}</div></div>
+    <div class="drawer-stat-card"><div class="drawer-stat-label">PnL</div><div class="drawer-stat-value ${entry.pct_change>=0?'green':'red'}">${fmtPct(entry.pct_change)}</div></div>
   `;
-
-  // Key stats grid
-  const allTrades = window._tradesCache || [];
-  const myTrades = allTrades.filter(t => t.name === name);
-  const realized = myTrades.filter(t => t.realized_pnl != null);
-  const winRate = realized.length > 0 ? Math.round(realized.filter(t => t.realized_pnl > 0).length / realized.length * 100) + '%' : '—';
-  const avgPnL = realized.length > 0 ? realized.reduce((a, b) => a + b.realized_pnl, 0) / realized.length : 0;
-
   document.getElementById('drawer-stats-grid').innerHTML = `
     <div class="category-card"><div class="category-label">Max Drawdown</div><div class="category-value">${entry.max_drawdown?.toFixed(1)}%</div></div>
     <div class="category-card"><div class="category-label">Volatility</div><div class="category-value">${entry.volatility?.toFixed(1)}</div></div>
-    <div class="category-card"><div class="category-label">Avg Trade PnL</div><div class="category-value">$${avgPnL.toFixed(2)}</div></div>
-    <div class="category-card"><div class="category-label">Win Rate</div><div class="category-value">${winRate}</div></div>
   `;
-
-  // Composition
-  const compWrap = document.getElementById('drawer-comp-wrap');
-  if (entry.composition) {
-    compWrap.innerHTML = Object.entries(entry.composition).filter(([_, v]) => v > 0).map(([k, v]) => `
-      <div style="background:var(--bg);border:1px solid var(--border);padding:6px 12px;border-radius:6px;flex:1;min-width:80px;text-align:center">
-        <div style="font-size:9px;color:var(--gray);text-transform:uppercase">${k}</div>
-        <div style="font-size:13px;font-weight:700">${v}%</div>
-      </div>
-    `).join('');
-  } else { compWrap.innerHTML = '—'; }
-
-  // History
-  const sorted = [...myTrades].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  document.getElementById('drawer-trades-body').innerHTML = sorted.map(t => {
-    const pnl = t.realized_pnl != null ? `<span style="color:${t.realized_pnl>=0?'var(--green)':'var(--red)'}">${t.realized_pnl>=0?'+':''}$${t.realized_pnl.toFixed(2)}</span>` : '—';
-    return `<tr><td>${fmtTime(t.timestamp)}</td><td>${t.trade_type}</td><td>${t.sent} → ${t.received}</td><td class="usd-main">$${t.usd_value}</td><td class="right">${pnl}</td></tr>`;
-  }).join('');
-
+  const comp = entry.composition;
+  document.getElementById('drawer-comp-wrap').innerHTML = comp ? Object.entries(comp).map(([k,v])=>`<div style="background:var(--bg);padding:6px 12px;border-radius:6px;flex:1;text-align:center"><div style="font-size:9px;color:var(--gray)">${k}</div><div style="font-size:13px;font-weight:700">${v}%</div></div>`).join('') : '—';
+  
+  const myTrades = window._allTrades.filter(t => t.name === name);
+  document.getElementById('drawer-trades-body').innerHTML = myTrades.map(t => `
+    <tr><td>${fmtTime(t.timestamp)}</td><td>${t.trade_type}</td><td>${t.sent} → ${t.received}</td><td class="usd-main">${fmtUsd(t.usd_value)}</td><td class="right ${t.realized_pnl>=0?'green':'red'}">${t.realized_pnl?fmtUsd(t.realized_pnl):'—'}</td></tr>
+  `).join('');
+  
   document.getElementById('drawer-overlay').classList.add('open');
   document.getElementById('participant-drawer').classList.add('open');
   fetchDrawerHoldings(name);
 }
 
 async function fetchDrawerHoldings(name) {
-  const wrap = document.getElementById('drawer-holdings-wrap');
-  try {
-    const r = await apiFetch(`/api/holdings/${encodeURIComponent(name)}`);
-    const d = await r.json();
-    wrap.innerHTML = `<table class="trades-table"><tbody>${d.holdings.map(h => `<tr><td>${h.symbol}</td><td>${h.chain}</td><td class="usd-main">$${h.usd_value.toFixed(2)}</td></tr>`).join('')}</tbody></table>`;
-  } catch(e) {}
+  const d = await (await fetch(BASE + `/api/holdings/${encodeURIComponent(name)}`)).json();
+  document.getElementById('drawer-holdings-wrap').innerHTML = `<table class="trades-table"><tbody>${d.holdings.map(h => `<tr><td>${h.symbol}</td><td>${h.chain}</td><td class="usd-main">${fmtUsd(h.usd_value)}</td></tr>`).join('')}</tbody></table>`;
 }
 
-function closeDrawer() {
-  document.getElementById('drawer-overlay').classList.remove('open');
-  document.getElementById('participant-drawer').classList.remove('open');
-}
+function closeDrawer() { document.getElementById('drawer-overlay').classList.remove('open'); document.getElementById('participant-drawer').classList.remove('open'); }
+function manualRefresh() { fetch(BASE + '/api/refresh'); setTimeout(() => location.reload(), 2000); }
+document.addEventListener('click', e => { const btn = e.target.closest('[data-participant]'); if (btn) openDrawer(btn.dataset.participant); });
 
-document.addEventListener('click', e => {
-  const btn = e.target.closest('[data-participant]');
-  if (btn) openDrawer(btn.dataset.participant);
-});
-
-refreshAll();
-setInterval(refreshAll, 3600000);
+loadStats(); loadPodium(); loadLeaderboard(); loadTrades();
+setInterval(() => { loadStats(); loadLeaderboard(); }, 60000);
 </script>
 </body>
 </html>

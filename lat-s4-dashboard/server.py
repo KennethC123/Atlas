@@ -1,7 +1,3 @@
-"""
-LAT S4 Leaderboard Dashboard - Backend
-Port: 3202
-"""
 import asyncio
 import json
 import os
@@ -206,7 +202,7 @@ async def _fetch_balance_pair(name: str, evm: str, sol: str) -> dict:
     if evm:
         tasks.append(_run_nansen(["research", "profiler", "balance", "--address", evm, "--chain", "base"]))
     else:
-        tasks.append(asyncio.coroutine(lambda: None)() if False else asyncio.sleep(0, result=None))
+        tasks.append(asyncio.sleep(0, result=None))
 
     if sol:
         tasks.append(_run_nansen(["research", "profiler", "balance", "--address", sol, "--chain", "solana"]))
@@ -347,204 +343,120 @@ async def _do_refresh():
     # Sort by timestamp desc
     all_trades.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
 
-    # ── Feature 4: PnL matching (buy→sell pairs per name+token) ─────────────
-    buy_stacks: dict = defaultdict(list)  # (name, token) -> [usd] oldest→newest
-    for t in reversed(all_trades):  # chronological order
+    # realized pnl matching
+    buy_stacks: dict = defaultdict(list)
+    for t in reversed(all_trades):
         sent_syms = [s.strip().upper() for s in t.get("sent", "").split(", ") if s.strip()]
         recv_syms = [s.strip().upper() for s in t.get("received", "").split(", ") if s.strip()]
-        # Non-quote tokens (anything that's not SOL/ETH/stable)
         sent_ns = [s for s in sent_syms if s not in QUOTE_TOKENS]
         recv_ns = [s for s in recv_syms if s not in QUOTE_TOKENS]
         tname = t.get("name", "")
 
         if recv_ns and not sent_ns:
-            # BUY: quote/stable → token (e.g. USDC→PENDLE, SOL→JUP, ETH→AERO)
             t["trade_type"] = "buy"
             t["realized_pnl"] = None
-            for sym in recv_ns:
-                buy_stacks[(tname, sym)].append(t["usd_value"])
+            for sym in recv_ns: buy_stacks[(tname, sym)].append(t["usd_value"])
         elif sent_ns and not recv_ns:
-            # SELL: token → quote/stable (e.g. PENDLE→USDC, JUP→SOL, AERO→ETH)
             t["trade_type"] = "sell"
             sym = sent_ns[0]
             key = (tname, sym)
             if buy_stacks[key]:
                 buy_usd = buy_stacks[key].pop()
                 t["realized_pnl"] = round(t["usd_value"] - buy_usd, 2)
-            else:
-                t["realized_pnl"] = None
+            else: t["realized_pnl"] = None
         elif sent_ns and recv_ns:
-            # SWAP: token → token (e.g. SOL→JUP then JUP→PENDLE)
-            # Sell the outgoing token (match prior buy), buy the incoming token
             t["trade_type"] = "swap"
             sell_sym = sent_ns[0]
             sell_key = (tname, sell_sym)
             if buy_stacks[sell_key]:
                 buy_usd = buy_stacks[sell_key].pop()
                 t["realized_pnl"] = round(t["usd_value"] - buy_usd, 2)
-            else:
-                t["realized_pnl"] = None
-            for sym in recv_ns:
-                buy_stacks[(tname, sym)].append(t["usd_value"])
+            else: t["realized_pnl"] = None
+            for sym in recv_ns: buy_stacks[(tname, sym)].append(t["usd_value"])
         else:
-            # Quote→quote (e.g. USDC→SOL): skip, not a competition trade
             t["trade_type"] = "swap"
             t["realized_pnl"] = None
 
     TRADES_CACHE_PATH.write_text(json.dumps({"trades": all_trades, "refreshed_at": now}, indent=2))
 
-    # ── Feature 1: trades_24h per participant ────────────────────────────────
+    # 24h stats
     now_epoch = datetime.now(timezone.utc).timestamp()
     cutoff_24h = now_epoch - 86400
     trades_24h_counts: dict[str, int] = {}
     for t in all_trades:
         ts_str = t.get("timestamp", "")
-        if not ts_str:
-            continue
+        if not ts_str: continue
         try:
             ts_epoch = datetime.fromisoformat(ts_str.replace("Z", "+00:00")).timestamp()
             if ts_epoch >= cutoff_24h:
                 n = t.get("name", "")
                 trades_24h_counts[n] = trades_24h_counts.get(n, 0) + 1
-        except Exception:
-            pass
+        except Exception: pass
 
-    # ── Feature 2: top token (most bought by count) ──────────────────────────
+    # Top token
     token_buy_counts: dict[str, int] = {}
     for t in all_trades:
         for sym in t.get("received", "").split(", "):
             sym = sym.strip().upper()
             if sym and sym not in TOP_TOKEN_EXCLUDE:
                 token_buy_counts[sym] = token_buy_counts.get(sym, 0) + 1
-    top_token = None
-    top_token_count = 0
-    if token_buy_counts:
-        top_token = max(token_buy_counts, key=lambda k: token_buy_counts[k])
-        top_token_count = token_buy_counts[top_token]
+    top_token = max(token_buy_counts, key=lambda k: token_buy_counts[k]) if token_buy_counts else None
+    top_token_count = token_buy_counts[top_token] if top_token else 0
 
-    # ── Feature 5: contrarian score (24h) ───────────────────────────────────
-    token_buyers_24h: dict[str, set] = {}
-    token_sellers_24h: dict[str, set] = {}
-    for t in all_trades:
-        ts_str = t.get("timestamp", "")
-        if not ts_str:
-            continue
-        try:
-            if datetime.fromisoformat(ts_str.replace("Z", "+00:00")).timestamp() < cutoff_24h:
-                continue
-        except Exception:
-            continue
-        n = t.get("name", "")
-        tt = t.get("trade_type", "")
-        if tt == "buy":
-            for sym in t.get("received", "").split(", "):
-                sym = sym.strip().upper()
-                if sym and sym not in STABLES:
-                    token_buyers_24h.setdefault(sym, set()).add(n)
-        elif tt == "sell":
-            for sym in t.get("sent", "").split(", "):
-                sym = sym.strip().upper()
-                if sym and sym not in STABLES:
-                    token_sellers_24h.setdefault(sym, set()).add(n)
-
-    contrarian_scores: dict[str, int] = {}
-    for t in all_trades:
-        ts_str = t.get("timestamp", "")
-        if not ts_str:
-            continue
-        try:
-            if datetime.fromisoformat(ts_str.replace("Z", "+00:00")).timestamp() < cutoff_24h:
-                continue
-        except Exception:
-            continue
-        if t.get("trade_type") != "buy":
-            continue
-        n = t.get("name", "")
-        for sym in t.get("received", "").split(", "):
-            sym = sym.strip().upper()
-            if not sym or sym in STABLES:
-                continue
-            other_buyers = token_buyers_24h.get(sym, set()) - {n}
-            other_sellers = token_sellers_24h.get(sym, set()) - {n}
-            total_others = len(other_buyers) + len(other_sellers)
-            if total_others > 0 and len(other_sellers) / total_others > 0.6:
-                contrarian_scores[n] = contrarian_scores.get(n, 0) + 1
-
-    # ── Feature 6: Risk Metrics (Volatility & Max Drawdown) ───────────────
+    # Risk Metrics
+    history = _load_history()
     for entry in leaderboard:
         snaps = history["participants"].get(entry["name"], [])
         if len(snaps) > 5:
             balances = [s["balance"] for s in snaps]
-            # Simple standard deviation of hourly balance % changes
             pct_changes = [(balances[i] / balances[i-1] - 1) for i in range(1, len(balances))]
             avg = sum(pct_changes) / len(pct_changes)
             variance = sum((x - avg)**2 for x in pct_changes) / len(pct_changes)
             entry["volatility"] = round((variance**0.5) * 100, 2)
-            
-            # Max Drawdown
             peak = balances[0]
             max_dd = 0.0
             for b in balances:
-                if b > peak:
-                    peak = b
+                if b > peak: peak = b
                 dd = (peak - b) / peak if peak > 0 else 0
-                if dd > max_dd:
-                    max_dd = dd
+                if dd > max_dd: max_dd = dd
             entry["max_drawdown"] = round(max_dd * 100, 2)
         else:
             entry["volatility"] = None
             entry["max_drawdown"] = None
 
-    # ── Feature 7: Portfolio Composition ──────────────────────────────────
-    # For each participant, pull live holdings for the drawer pie chart
+    # Portfolio Composition
     for entry in leaderboard:
         participant = next((p for p in PARTICIPANTS if p[0] == entry["name"]), None)
         if participant:
             _, _, _, evm, sol = participant
-            tasks = []
-            if evm:
-                tasks.append(_run_nansen(["research", "profiler", "balance", "--address", evm, "--chain", "base"], timeout=30))
-            else:
-                tasks.append(asyncio.sleep(0, result=None))
-            if sol:
-                tasks.append(_run_nansen(["research", "profiler", "balance", "--address", sol, "--chain", "solana"], timeout=30))
-            else:
-                tasks.append(asyncio.sleep(0, result=None))
-            
-            # This is slow, but _do_refresh runs in background
-            bal_results = await asyncio.gather(*tasks)
-            
             comp = {"stables": 0.0, "majors": 0.0, "memes": 0.0, "other": 0.0}
             MAJORS = {"ETH", "SOL", "BTC", "WETH", "WSOL", "WBTC"}
-            MEMES = {"WIF", "BONK", "PEPE", "PNUT", "MOODENG", "DOGE", "VIRTUAL", "AERO"} # common S4 targets
+            MEMES = {"WIF", "BONK", "PEPE", "PNUT", "MOODENG", "DOGE", "VIRTUAL", "AERO"}
             
-            for chain_data in bal_results:
-                if not chain_data: continue
-                inner = chain_data.get("data", {})
-                # Handle nested or flat data
-                tokens = []
-                if isinstance(inner, dict):
-                    tokens = inner.get("data", [])
-                    if not tokens: tokens = inner.get("tokens", [])
-                elif isinstance(inner, list):
-                    tokens = inner
+            tasks = []
+            if evm: tasks.append(_run_nansen(["research", "profiler", "balance", "--address", evm, "--chain", "base"], timeout=30))
+            if sol: tasks.append(_run_nansen(["research", "profiler", "balance", "--address", sol, "--chain", "solana"], timeout=30))
+            if tasks:
+                bal_results = await asyncio.gather(*tasks)
+                for chain_data in bal_results:
+                    if not chain_data: continue
+                    inner = chain_data.get("data", {})
+                    tokens = []
+                    if isinstance(inner, dict):
+                        tokens = inner.get("data", []) or inner.get("tokens", [])
+                    elif isinstance(inner, list): tokens = inner
+                    for t in tokens:
+                        sym = (t.get("token_symbol") or t.get("symbol") or "").upper()
+                        val = float(t.get("value_usd", t.get("usd_value", 0)) or 0)
+                        if val < 0.1: continue
+                        if sym in STABLES: comp["stables"] += val
+                        elif sym in MAJORS: comp["majors"] += val
+                        elif sym in MEMES: comp["memes"] += val
+                        else: comp["other"] += val
+                total_bal = sum(comp.values())
+                entry["composition"] = {k: round(v/total_bal * 100, 1) for k, v in comp.items()} if total_bal > 0 else None
 
-                for t in tokens:
-                    sym = (t.get("token_symbol") or t.get("symbol") or "").upper()
-                    val = float(t.get("value_usd", t.get("usd_value", 0)) or 0)
-                    if val < 0.1: continue
-                    if sym in STABLES: comp["stables"] += val
-                    elif sym in MAJORS: comp["majors"] += val
-                    elif sym in MEMES: comp["memes"] += val
-                    else: comp["other"] += val
-            
-            total_bal = sum(comp.values())
-            if total_bal > 0:
-                entry["composition"] = {k: round(v/total_bal * 100, 1) for k, v in comp.items()}
-            else:
-                entry["composition"] = None
-
-    # ── Annotate leaderboard ─────────────────────────────────────────────────
+    # Annotate leaderboard
     trade_counts: dict[str, int] = {}
     unique_tickers: dict[str, set] = {}
     for t in all_trades:
@@ -553,89 +465,55 @@ async def _do_refresh():
         tickers = unique_tickers.setdefault(name, set())
         for sym in t.get("received", "").split(", "):
             sym = sym.strip().upper()
-            if sym and sym not in STABLES:
-                tickers.add(sym)
+            if sym and sym not in STABLES: tickers.add(sym)
+    
     for entry in leaderboard:
         n = entry["name"]
         entry["trade_count"] = trade_counts.get(n, 0)
         entry["unique_tickers"] = len(unique_tickers.get(n, set()))
         entry["trades_24h"] = trades_24h_counts.get(n, 0)
-        entry["contrarian_score"] = contrarian_scores.get(n, 0)
 
-    # ── Feature 3: 24h snapshot & pct_change_24h ────────────────────────────
+    # 24h pct change
     now_ts = datetime.now(timezone.utc)
     prev_balances: dict[str, float] = {}
     if SNAPSHOT_PATH.exists():
         try:
             snap = json.loads(SNAPSHOT_PATH.read_text())
             snap_ts = datetime.fromisoformat(snap.get("timestamp", "1970-01-01T00:00:00+00:00"))
-            age_h = (now_ts - snap_ts).total_seconds() / 3600
-            if age_h >= 23:
-                # Rotate: move current → prev, write fresh snapshot
+            if (now_ts - snap_ts).total_seconds() / 3600 >= 23:
                 SNAPSHOT_PREV_PATH.write_text(SNAPSHOT_PATH.read_text())
-                SNAPSHOT_PATH.write_text(json.dumps({
-                    "timestamp": now_ts.isoformat(),
-                    "balances": {e["name"]: e["total_usd"] for e in leaderboard},
-                }, indent=2))
+                SNAPSHOT_PATH.write_text(json.dumps({"timestamp": now_ts.isoformat(), "balances": {e["name"]: e["total_usd"] for e in leaderboard}}, indent=2))
                 prev_balances = snap.get("balances", {})
             else:
-                if SNAPSHOT_PREV_PATH.exists():
-                    try:
-                        prev_snap = json.loads(SNAPSHOT_PREV_PATH.read_text())
-                        prev_balances = prev_snap.get("balances", {})
-                    except Exception:
-                        pass
-        except Exception:
-            pass
-    else:
-        SNAPSHOT_PATH.write_text(json.dumps({
-            "timestamp": now_ts.isoformat(),
-            "balances": {e["name"]: e["total_usd"] for e in leaderboard},
-        }, indent=2))
+                if SNAPSHOT_PREV_PATH.exists(): prev_balances = json.loads(SNAPSHOT_PREV_PATH.read_text()).get("balances", {})
+        except Exception: pass
+    else: SNAPSHOT_PATH.write_text(json.dumps({"timestamp": now_ts.isoformat(), "balances": {e["name"]: e["total_usd"] for e in leaderboard}}, indent=2))
 
     for entry in leaderboard:
         prev = prev_balances.get(entry["name"])
-        if prev and prev > 0 and entry["has_data"]:
-            entry["pct_change_24h"] = round((entry["total_usd"] / prev - 1) * 100, 2)
-        else:
-            entry["pct_change_24h"] = None
+        entry["pct_change_24h"] = round((entry["total_usd"] / prev - 1) * 100, 2) if prev and prev > 0 and entry["has_data"] else None
 
-    # ── Aggregate stats for /api/stats ───────────────────────────────────────
+    # Aggregate stats
     max_t24h = max((e.get("trades_24h", 0) for e in leaderboard), default=0)
-    most_active_entry = next(
-        (e for e in leaderboard if e.get("trades_24h", 0) == max_t24h and max_t24h > 0), None
-    )
-    top_gainer_entry = max(
-        (e for e in leaderboard if e.get("pct_change_24h") is not None),
-        key=lambda e: e["pct_change_24h"],
-        default=None,
-    )
-    # Largest loss 24h (replaces contrarian)
-    largest_loss_entry = min(
-        (e for e in leaderboard if e.get("pct_change_24h") is not None),
-        key=lambda e: e["pct_change_24h"],
-        default=None,
-    )
+    most_active = next((e for e in leaderboard if e.get("trades_24h", 0) == max_t24h and max_t24h > 0), None)
+    with_24h = [e for e in leaderboard if e.get("pct_change_24h") is not None]
+    top_gainer = max(with_24h, key=lambda e: e["pct_change_24h"], default=None)
+    largest_loss = min(with_24h, key=lambda e: e["pct_change_24h"], default=None)
 
-    # Re-save cache with all new fields
-    cache_data["leaderboard"] = leaderboard
-    cache_data["top_token"] = top_token
-    cache_data["top_token_count"] = top_token_count
-    cache_data["max_trades_24h"] = max_t24h
-    cache_data["most_active_claw"] = most_active_entry["claw"] if most_active_entry else None
-    cache_data["most_active_trades"] = max_t24h if most_active_entry else 0
-    cache_data["top_gainer_claw"] = top_gainer_entry["claw"] if top_gainer_entry else None
-    cache_data["top_gainer_pct"] = top_gainer_entry["pct_change_24h"] if top_gainer_entry else None
-    cache_data["largest_loss_claw"] = largest_loss_entry["claw"] if largest_loss_entry else None
-    cache_data["largest_loss_pct"] = largest_loss_entry["pct_change_24h"] if largest_loss_entry else None
+    cache_data.update({
+        "leaderboard": leaderboard, "top_token": top_token, "top_token_count": top_token_count,
+        "max_trades_24h": max_t24h, "most_active_claw": most_active["claw"] if most_active else None,
+        "most_active_trades": max_t24h, "top_gainer_claw": top_gainer["claw"] if top_gainer else None,
+        "top_gainer_pct": top_gainer["pct_change_24h"] if top_gainer else None,
+        "largest_loss_claw": largest_loss["claw"] if largest_loss else None,
+        "largest_loss_pct": largest_loss["pct_change_24h"] if largest_loss else None,
+    })
     CACHE_PATH.write_text(json.dumps(cache_data, indent=2))
 
-    # ── History: append current balances for sparklines ──────────────────────
-    history = _load_history()
+    # History update
     for entry in leaderboard:
         name = entry["name"]
-        if name not in history["participants"]:
-            history["participants"][name] = []
+        if name not in history["participants"]: history["participants"][name] = []
         history["participants"][name].append({"ts": now, "balance": entry["total_usd"]})
         history["participants"][name] = history["participants"][name][-168:]
     HISTORY_PATH.write_text(json.dumps(history, indent=2))
@@ -643,99 +521,56 @@ async def _do_refresh():
 
 def _load_cache() -> Optional[dict]:
     if CACHE_PATH.exists():
-        try:
-            return json.loads(CACHE_PATH.read_text())
-        except Exception:
-            pass
+        try: return json.loads(CACHE_PATH.read_text())
+        except Exception: pass
     return None
-
 
 def _load_history() -> dict:
     if HISTORY_PATH.exists():
-        try:
-            return json.loads(HISTORY_PATH.read_text())
-        except Exception:
-            pass
+        try: return json.loads(HISTORY_PATH.read_text())
+        except Exception: pass
     return {"participants": {}}
 
-
 def _cache_is_fresh() -> bool:
-    if not CACHE_PATH.exists():
-        return False
-    age = time.time() - CACHE_PATH.stat().st_mtime
-    return age < CACHE_TTL
-
+    if not CACHE_PATH.exists(): return False
+    return (time.time() - CACHE_PATH.stat().st_mtime) < CACHE_TTL
 
 def _competition_day() -> int:
-    now = datetime.now(timezone.utc)
-    return max(1, (now - COMPETITION_START).days + 1)
-
-
-# ─── ROUTES ───────────────────────────────────────────────────────────────────
+    return max(1, (datetime.now(timezone.utc) - COMPETITION_START).days + 1)
 
 @app.on_event("startup")
 async def startup():
-    """Trigger initial data load if cache is empty."""
     api_key = os.environ.get("NANSEN_API_KEY", "")
     if api_key:
-        nansen_cfg_dir = Path.home() / ".nansen"
-        nansen_cfg_dir.mkdir(parents=True, exist_ok=True)
-        nansen_cfg_path = nansen_cfg_dir / "config.json"
-        cfg = {}
-        if nansen_cfg_path.exists():
-            try:
-                cfg = json.loads(nansen_cfg_path.read_text())
-            except Exception:
-                pass
-        cfg["apiKey"] = api_key
+        nansen_cfg_path = Path.home() / ".nansen" / "config.json"
+        nansen_cfg_path.parent.mkdir(parents=True, exist_ok=True)
+        cfg = {"apiKey": api_key}
         nansen_cfg_path.write_text(json.dumps(cfg, indent=2))
-    if not CACHE_PATH.exists():
-        asyncio.create_task(_do_refresh())
-
+    if not CACHE_PATH.exists(): asyncio.create_task(_do_refresh())
 
 @app.get("/", response_class=HTMLResponse)
 async def index():
     html_path = STATIC_PATH / "index.html"
-    if html_path.exists():
-        return HTMLResponse(html_path.read_text())
+    if html_path.exists(): return HTMLResponse(html_path.read_text())
     return HTMLResponse("<h1>LAT S4 Dashboard</h1><p>Loading...</p>")
-
 
 @app.get("/api/leaderboard")
 async def get_leaderboard():
     cache = _load_cache()
-    if not _cache_is_fresh():
-        asyncio.create_task(_do_refresh())
-    if not cache:
-        return JSONResponse({"leaderboard": [], "refreshed_at": None, "loading": True})
+    if not _cache_is_fresh(): asyncio.create_task(_do_refresh())
+    if not cache: return JSONResponse({"leaderboard": [], "refreshed_at": None, "loading": True})
     history = _load_history()
     for entry in cache.get("leaderboard", []):
         snaps = history["participants"].get(entry["name"], [])
         entry["history"] = [snap["balance"] for snap in snaps]
     return JSONResponse(cache)
 
-
 @app.get("/api/stats")
 async def get_stats():
     cache = _load_cache()
-    day = _competition_day()
-    total_days = 73
-
+    day, total_days = _competition_day(), 73
     if not cache or not cache.get("leaderboard"):
-        return JSONResponse({
-            "day": day,
-            "total_days": total_days,
-            "participant_count": len(PARTICIPANTS),
-            "green_count": 0,
-            "red_count": 0,
-            "collective_usd": 0,
-            "collective_pct": 0,
-            "leader_name": None,
-            "leader_pct": None,
-            "refreshed_at": None,
-            "loading": True,
-        })
-
+        return JSONResponse({"day": day, "total_days": total_days, "participant_count": len(PARTICIPANTS), "loading": True})
     lb = cache["leaderboard"]
     with_data = [e for e in lb if e["has_data"]]
     green = sum(1 for e in with_data if (e["pct_change"] or 0) > 0)
@@ -743,138 +578,74 @@ async def get_stats():
     collective = sum(e["total_usd"] for e in with_data)
     collective_pct = (collective / (len(with_data) * STARTING_BALANCE) - 1) * 100 if with_data else 0
     leader = lb[0] if lb else None
-
     return JSONResponse({
-        "day": day,
-        "total_days": total_days,
-        "participant_count": len(PARTICIPANTS),
-        "green_count": green,
-        "red_count": red,
-        "collective_usd": round(collective, 2),
-        "collective_pct": round(collective_pct, 2),
-        "leader_name": leader["name"] if leader else None,
-        "leader_claw": leader["claw"] if leader else None,
-        "leader_pct": leader["pct_change"] if leader else None,
-        "refreshed_at": cache.get("refreshed_at"),
-        "loading": False,
-        "top_token": cache.get("top_token"),
-        "top_token_count": cache.get("top_token_count", 0),
-        "max_trades_24h": cache.get("max_trades_24h", 0),
-        "most_active_claw": cache.get("most_active_claw"),
-        "most_active_trades": cache.get("most_active_trades", 0),
-        "top_gainer_claw": cache.get("top_gainer_claw"),
-        "top_gainer_pct": cache.get("top_gainer_pct"),
-        "largest_loss_claw": cache.get("largest_loss_claw"),
-        "largest_loss_pct": cache.get("largest_loss_pct"),
+        "day": day, "total_days": total_days, "participant_count": len(PARTICIPANTS),
+        "green_count": green, "red_count": red, "collective_usd": round(collective, 2),
+        "collective_pct": round(collective_pct, 2), "leader_name": leader["name"] if leader else None,
+        "leader_claw": leader["claw"] if leader else None, "leader_pct": leader["pct_change"] if leader else None,
+        "refreshed_at": cache.get("refreshed_at"), "loading": False,
+        "top_token": cache.get("top_token"), "top_token_count": cache.get("top_token_count", 0),
+        "most_active_claw": cache.get("most_active_claw"), "most_active_trades": cache.get("most_active_trades", 0),
+        "top_gainer_claw": cache.get("top_gainer_claw"), "top_gainer_pct": cache.get("top_gainer_pct"),
+        "largest_loss_claw": cache.get("largest_loss_claw"), "largest_loss_pct": cache.get("largest_loss_pct"),
     })
-
 
 @app.get("/api/trades")
 async def get_trades():
     if TRADES_CACHE_PATH.exists():
-        try:
-            return JSONResponse(json.loads(TRADES_CACHE_PATH.read_text()))
-        except Exception:
-            pass
+        try: return JSONResponse(json.loads(TRADES_CACHE_PATH.read_text()))
+        except Exception: pass
     return JSONResponse({"trades": [], "refreshed_at": None})
-
 
 @app.get("/api/refresh")
 async def trigger_refresh():
     global _last_refresh
     now = time.time()
     if now - _last_refresh < 3600:
-        remaining = int(3600 - (now - _last_refresh))
-        return JSONResponse({"status": "rate_limited", "retry_in_seconds": remaining})
+        return JSONResponse({"status": "rate_limited", "retry_in_seconds": int(3600 - (now - _last_refresh))})
     async with _refresh_lock:
-        if time.time() - _last_refresh < 3600:
-            return JSONResponse({"status": "already_refreshing"})
+        if time.time() - _last_refresh < 3600: return JSONResponse({"status": "already_refreshing"})
         asyncio.create_task(_do_refresh())
     return JSONResponse({"status": "refresh_triggered"})
 
-
 @app.get("/api/holdings/{name}")
 async def get_holdings(name: str):
-    """Fetch per-token balances for a single participant (live, not cached)."""
     participant = next((p for p in PARTICIPANTS if p[0] == name), None)
-    if not participant:
-        return JSONResponse({"holdings": [], "error": "not found"}, status_code=404)
-
+    if not participant: return JSONResponse({"holdings": [], "error": "not found"}, status_code=404)
     _, claw, slack_id, evm, sol = participant
-
     def _extract_tokens(data: dict, chain: str) -> list[dict]:
-        if not data:
-            return []
+        if not data: return []
         inner = data.get("data", {})
-        # Handle nested or flat data
         token_list = []
-        if isinstance(inner, dict):
-            token_list = inner.get("data", [])
-            if not token_list: token_list = inner.get("tokens", [])
-        elif isinstance(inner, list):
-            token_list = inner
-
+        if isinstance(inner, dict): token_list = inner.get("data", []) or inner.get("tokens", [])
+        elif isinstance(inner, list): token_list = inner
         results = []
         for t in token_list:
-            try:
-                # Handle value_usd or usd_value
-                usd = float(t.get("value_usd", t.get("usd_value", 0)) or 0)
-            except (TypeError, ValueError):
-                usd = 0.0
-            if usd < 0.01:
-                continue
-            results.append({
-                "symbol": t.get("token_symbol") or t.get("symbol") or "?",
-                "amount": t.get("token_amount") or t.get("balance") or 0,
-                "usd_value": round(usd, 4),
-                "chain": chain,
-            })
-        results.sort(key=lambda x: x["usd_value"], reverse=True)
+            try: usd = float(t.get("value_usd", t.get("usd_value", 0)) or 0)
+            except (TypeError, ValueError): usd = 0.0
+            if usd < 0.01: continue
+            results.append({"symbol": t.get("token_symbol") or t.get("symbol") or "?", "amount": t.get("token_amount") or t.get("balance") or 0, "usd_value": round(usd, 4), "chain": chain})
         return results
-
     tasks = []
-    if evm:
-        tasks.append(_run_nansen(["research", "profiler", "balance", "--address", evm, "--chain", "base"], timeout=30))
-    else:
-        tasks.append(asyncio.sleep(0, result=None))
-    if sol:
-        tasks.append(_run_nansen(["research", "profiler", "balance", "--address", sol, "--chain", "solana"], timeout=30))
-    else:
-        tasks.append(asyncio.sleep(0, result=None))
-
-    base_data, sol_data = await asyncio.gather(*tasks)
-    holdings = _extract_tokens(base_data, "Base") + _extract_tokens(sol_data, "Solana")
+    if evm: tasks.append(_run_nansen(["research", "profiler", "balance", "--address", evm, "--chain", "base"], timeout=30))
+    if sol: tasks.append(_run_nansen(["research", "profiler", "balance", "--address", sol, "--chain", "solana"], timeout=30))
+    if not tasks: return JSONResponse({"name": name, "holdings": []})
+    bal_results = await asyncio.gather(*tasks)
+    holdings = []
+    for i, chain in enumerate(["Base", "Solana"]):
+        if i < len(bal_results): holdings.extend(_extract_tokens(bal_results[i], chain))
     holdings.sort(key=lambda x: x["usd_value"], reverse=True)
-
-    return JSONResponse({
-        "name": name,
-        "holdings": holdings,
-        "evm_address": evm,
-        "sol_address": sol,
-    })
-
+    return JSONResponse({"name": name, "holdings": holdings, "evm_address": evm, "sol_address": sol})
 
 @app.get("/api/podium")
 async def get_podium():
     cache = _load_cache()
-    if not cache or not cache.get("leaderboard"):
-        return JSONResponse({"podium": []})
-
-    lb = cache["leaderboard"]
-    top3 = [e for e in lb if e["has_data"]][:3]
+    if not cache or not cache.get("leaderboard"): return JSONResponse({"podium": []})
+    top3 = [e for e in cache["leaderboard"] if e["has_data"]][:3]
     slack_ids = {name: slack_id for name, claw, slack_id, evm, sol in PARTICIPANTS}
-
     async def _enrich(entry):
         slack_id = slack_ids.get(entry["name"], "")
         avatar_url = await _fetch_slack_avatar(slack_id)
-        return {
-            "rank": entry["rank"],
-            "name": entry["name"],
-            "claw": entry["claw"],
-            "total_usd": entry["total_usd"],
-            "pct_change": entry["pct_change"],
-            "avatar_url": avatar_url,
-        }
-
+        return {"rank": entry["rank"], "name": entry["name"], "claw": entry["claw"], "total_usd": entry["total_usd"], "pct_change": entry["pct_change"], "avatar_url": avatar_url}
     podium = await asyncio.gather(*[_enrich(e) for e in top3])
     return JSONResponse({"podium": list(podium)})
